@@ -1,0 +1,1098 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Siddhesh Uttarwar â€” AI Â· Photonics Â· Electronics</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#03050f;
+  --bg2:#060a18;
+  --violet:#8b5cf6;
+  --teal:#00f5d4;
+  --amber:#ffaa00;
+  --white:#f0f4ff;
+  --text:#a8b8d8;
+  --muted:#3a4a6a;
+  --border:rgba(0,245,212,0.12);
+  --mono:'Share Tech Mono',monospace;
+  --head:'Outfit',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--teal);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .2s;box-shadow:0 0 10px var(--teal);}
+#cur-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(0,245,212,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s;}
+
+/* BG CANVAS */
+#bgCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.45;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:.9rem 5%;background:rgba(3,5,15,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--mono);font-size:.8rem;color:var(--teal);letter-spacing:.18em;}
+.nav-logo em{color:var(--amber);font-style:normal;}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-decoration:none;letter-spacing:.15em;text-transform:uppercase;transition:color .2s;}
+.nav-links a:hover{color:var(--teal);}
+.nav-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;padding:.28rem .9rem;border:1px solid rgba(0,245,212,0.3);color:var(--teal);background:rgba(0,245,212,0.05);display:flex;align-items:center;gap:.5rem;}
+.nav-pill::before{content:'';width:5px;height:5px;background:var(--teal);border-radius:50%;animation:pdot 2s infinite;}
+@keyframes pdot{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* HERO */
+#hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:0 5%;}
+.hero-grid{display:grid;grid-template-columns:1fr 520px;gap:3rem;align-items:center;width:100%;}
+.h-ey{font-family:var(--mono);font-size:.65rem;color:var(--teal);letter-spacing:.28em;text-transform:uppercase;margin-bottom:1.4rem;opacity:0;animation:rise .6s .2s forwards;}
+.h-name{font-family:var(--head);font-size:clamp(2.8rem,6vw,5.6rem);font-weight:800;line-height:.95;color:var(--white);margin-bottom:.6rem;opacity:0;animation:rise .6s .3s forwards;}
+.h-name .ghost{color:transparent;-webkit-text-stroke:1.5px var(--amber);}
+.h-role{font-family:var(--mono);font-size:.88rem;color:var(--amber);min-height:1.4em;margin-bottom:1.4rem;opacity:0;animation:rise .6s .4s forwards;}
+.h-desc{font-size:.97rem;line-height:1.9;color:var(--text);max-width:500px;margin-bottom:2.5rem;opacity:0;animation:rise .6s .5s forwards;}
+.h-btns{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:rise .6s .6s forwards;}
+.btn{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.8rem 1.8rem;text-decoration:none;cursor:none;transition:all .25s;display:inline-block;border:none;}
+.btn-teal{border:1px solid var(--teal);color:var(--teal);background:transparent;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);}
+.btn-teal:hover{background:rgba(0,245,212,.08);transform:translateY(-2px);}
+.btn-amber{background:var(--amber);color:#03050f;font-weight:700;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);}
+.btn-amber:hover{background:#ffc044;transform:translateY(-2px);}
+.h-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2rem;opacity:0;animation:rise .6s .75s forwards;}
+.hchip{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;padding:.28rem .75rem;border:1px solid var(--border);color:var(--muted);text-transform:uppercase;transition:all .2s;}
+.hchip:hover{border-color:var(--teal);color:var(--teal);}
+
+/* HERO PANEL */
+.hero-panel{position:relative;background:rgba(6,10,24,0.92);border:1px solid rgba(0,245,212,0.22);padding:1.4rem;height:480px;opacity:0;animation:rise .7s .5s forwards;box-shadow:0 0 60px rgba(0,245,212,0.06),inset 0 0 40px rgba(0,0,0,0.4);overflow:hidden;}
+.hero-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);}
+.panel-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:rgba(0,245,212,.5);text-transform:uppercase;margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;}
+.panel-status{display:flex;align-items:center;gap:.4rem;color:rgba(0,255,157,.6);}
+.panel-status::before{content:'';width:4px;height:4px;background:#00ff9d;border-radius:50%;animation:pdot 1.5s infinite;}
+#heroCanvas{width:100%;height:calc(100% - 26px);display:block;}
+
+/* SECTIONS */
+section{position:relative;z-index:1;padding:7rem 5%;}
+.s-ey{font-family:var(--mono);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
+.s-ey::before{content:'//';color:var(--muted);}
+.s-title{font-family:var(--head);font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;color:var(--white);margin-bottom:3rem;}
+.hi{color:var(--amber);}
+
+/* ABOUT */
+#about{background:var(--bg2);}
+.about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:5rem;align-items:start;}
+.ab-p{font-size:.96rem;line-height:1.9;color:var(--text);margin-bottom:1.2rem;}
+.ab-p strong{color:var(--teal);}
+.terminal{background:#020510;border:1px solid rgba(0,245,212,.15);font-family:var(--mono);font-size:.73rem;line-height:2;padding:1.8rem 1.4rem 1.2rem;position:relative;margin-top:2rem;}
+.t-bar{position:absolute;top:0;left:0;right:0;height:26px;background:rgba(0,245,212,.04);border-bottom:1px solid rgba(0,245,212,.08);display:flex;align-items:center;padding:0 .9rem;gap:.4rem;}
+.td{width:8px;height:8px;border-radius:50%;}.td:nth-child(1){background:#ff5f57;}.td:nth-child(2){background:#febc2e;}.td:nth-child(3){background:#28c840;}
+.tc{color:var(--teal);}.tg{color:#00ff9d;}.ta{color:var(--amber);}.tm{color:var(--muted);}.tw{color:var(--white);}
+.bc{display:inline-block;animation:bc 1s step-end infinite;}
+@keyframes bc{50%{opacity:0;}}
+.edu-card{border:1px solid var(--border);padding:1.4rem 1.5rem;margin-bottom:1.1rem;background:rgba(255,255,255,.015);position:relative;transition:all .3s;}
+.edu-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--teal),var(--violet));}
+.edu-card:hover{border-color:rgba(0,245,212,.4);transform:translateX(5px);}
+.edu-deg{font-family:var(--head);font-weight:700;color:var(--white);font-size:.92rem;margin-bottom:.25rem;}
+.edu-uni{color:var(--teal);font-size:.78rem;font-family:var(--mono);margin-bottom:.25rem;}
+.edu-yr{font-family:var(--mono);font-size:.63rem;color:var(--muted);letter-spacing:.1em;}
+.stat-quad{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:2rem;}
+.sq{border:1px solid var(--border);padding:1.4rem .9rem;text-align:center;background:rgba(139,92,246,.04);transition:all .3s;position:relative;overflow:hidden;}
+.sq::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,var(--teal),var(--violet),var(--amber));transform:scaleX(0);transition:transform .35s;}
+.sq:hover::after{transform:scaleX(1);}
+.sq:hover{border-color:rgba(0,245,212,.3);}
+.sq-n{font-family:var(--head);font-size:2.1rem;font-weight:800;color:var(--amber);display:block;line-height:1;margin-bottom:.35rem;}
+.sq-l{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+
+/* EXPERIENCE */
+#experience{background:var(--bg);}
+.exp-card{border:1px solid var(--border);padding:2.4rem;margin-bottom:1.6rem;background:rgba(255,255,255,.01);position:relative;overflow:hidden;transition:border-color .3s;}
+.exp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--teal),var(--violet),transparent);opacity:0;transition:opacity .3s;}
+.exp-card:hover::before{opacity:1;}
+.exp-card:hover{border-color:rgba(0,245,212,.35);}
+.exp-hd{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem;}
+.exp-role{font-family:var(--head);font-size:1.18rem;font-weight:700;color:var(--white);}
+.exp-co{color:var(--amber);font-size:.78rem;font-family:var(--mono);margin-top:.2rem;}
+.exp-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .85rem;border:1px solid var(--border);color:var(--teal);background:rgba(0,245,212,.04);white-space:nowrap;}
+.exp-ul{list-style:none;margin-top:1rem;}
+.exp-ul li{font-size:.88rem;color:rgba(168,184,216,.8);line-height:1.75;padding-left:1.6rem;position:relative;margin-bottom:.45rem;}
+.exp-ul li::before{content:'â–¸';color:var(--teal);position:absolute;left:0;top:.25rem;font-size:.68rem;}
+.exp-ul li strong{color:var(--amber);}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PUBLICATIONS / PROJECTS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+#projects{background:var(--bg2);}
+.pub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.8rem;}
+
+.pub-card{
+  border:1px solid var(--border);
+  padding:2rem;
+  background:rgba(255,255,255,.015);
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s;
+  cursor:none;
+}
+.pub-card:hover{transform:translateY(-6px);border-color:rgba(0,245,212,.5);}
+.pub-aura{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);top:-60px;right:-60px;pointer-events:none;transition:all .5s;}
+.pub-card:hover .pub-aura{width:240px;height:240px;top:-100px;right:-100px;background:radial-gradient(circle,rgba(0,245,212,.12),transparent 70%);}
+
+.pub-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.22rem .75rem;margin-bottom:.9rem;
+  border:1px solid;
+}
+.pub-badge.ieee{border-color:rgba(0,130,255,.4);color:#4a9eff;background:rgba(0,130,255,.05);}
+.pub-badge.patent{border-color:rgba(255,170,0,.4);color:var(--amber);background:rgba(255,170,0,.06);}
+.pub-badge.award{border-color:rgba(0,255,157,.3);color:#00ff9d;background:rgba(0,255,157,.05);}
+
+.pub-venue{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--muted);margin-bottom:.65rem;}
+.pub-title{font-family:var(--head);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:.75rem;line-height:1.4;}
+.pub-authors{font-size:.78rem;color:var(--muted);margin-bottom:.9rem;line-height:1.5;}
+.pub-authors strong{color:rgba(0,245,212,.75);}
+.pub-abstract-short{font-size:.82rem;color:rgba(168,184,216,.6);line-height:1.75;margin-bottom:1.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.proj-pub-count{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:.5rem;
+}
+.proj-paper-pills{display:flex;flex-direction:column;gap:.35rem;margin-top:.9rem;}
+.ppill{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
+  color:rgba(0,245,212,.7);padding:.22rem .7rem;
+  border-left:2px solid rgba(0,245,212,.35);
+  background:rgba(0,245,212,.04);
+  display:block;
+}
+.tags{display:flex;flex-wrap:wrap;gap:.38rem;margin-bottom:1.2rem;}
+.tag{font-family:var(--mono);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border:1px solid rgba(255,170,0,.2);color:var(--amber);transition:all .2s;}
+.tag:hover{background:rgba(255,170,0,.08);}
+.pub-read-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);border:1px solid rgba(0,245,212,.25);
+  padding:.3rem .9rem;background:rgba(0,245,212,.04);
+  cursor:none;transition:all .25s;
+}
+.pub-read-btn:hover{background:rgba(0,245,212,.1);border-color:var(--teal);}
+.pub-read-btn .arr{transition:transform .2s;}
+.pub-read-btn:hover .arr{transform:translateX(3px);}
+
+/* SKILLS */
+#skills{background:var(--bg);}
+.skills-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.4rem;}
+.sk-cat{border:1px solid var(--border);padding:1.8rem;background:rgba(255,255,255,.01);transition:border-color .3s;}
+.sk-cat:hover{border-color:rgba(0,245,212,.35);}
+.sk-head{font-family:var(--mono);font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);border-bottom:1px solid var(--border);padding-bottom:.75rem;margin-bottom:1.3rem;}
+.sk-bars{display:flex;flex-direction:column;gap:.85rem;}
+.sk-label{font-family:var(--mono);font-size:.68rem;color:var(--text);display:flex;justify-content:space-between;margin-bottom:.3rem;}
+.sk-label span{color:var(--muted);}
+.sk-track{height:3px;background:rgba(255,255,255,.05);overflow:hidden;}
+.sk-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--violet));transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+
+/* ACHIEVEMENTS */
+#achievements{background:var(--bg2);}
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:1.4rem;}
+.ach-card{border:1px solid var(--border);padding:1.8rem;background:rgba(255,255,255,.015);display:flex;gap:1.1rem;align-items:flex-start;transition:all .3s;}
+.ach-card:hover{border-color:var(--amber);transform:translateY(-3px);}
+.ach-ico{font-size:1.4rem;flex-shrink:0;width:2.3rem;height:2.3rem;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.ach-ttl{font-family:var(--head);font-weight:700;color:var(--white);font-size:.9rem;margin-bottom:.35rem;}
+.ach-txt{font-size:.8rem;color:var(--muted);line-height:1.6;}
+
+/* CONTACT */
+#contact{background:var(--bg);}
+.ct-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+.ct-copy p{font-size:.96rem;line-height:1.9;color:var(--text);opacity:.8;margin-bottom:2rem;}
+.ct-links{display:flex;flex-direction:column;gap:.85rem;}
+.cl{display:flex;align-items:center;gap:1.1rem;text-decoration:none;padding:.95rem 1.3rem;border:1px solid var(--border);color:var(--text);transition:all .3s;position:relative;overflow:hidden;}
+.cl::after{content:'';position:absolute;inset:0;background:rgba(0,245,212,.03);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.cl:hover::after{transform:scaleX(1);}
+.cl:hover{border-color:var(--teal);}
+.cl-ico{font-family:var(--mono);font-size:.9rem;color:var(--teal);width:1.4rem;text-align:center;flex-shrink:0;}
+.cl-lbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;}
+.cl-val{font-size:.87rem;color:var(--white);font-weight:500;}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.8rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:rgba(3,5,15,.97);}
+.ft-brand{font-family:var(--head);font-size:.95rem;font-weight:800;color:var(--amber);}
+.ft-copy{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em;}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PUBLICATION POPUP / MODAL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(3,5,15,0.92);
+  backdrop-filter:blur(16px);
+  z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--bg2);
+  border:1px solid rgba(0,245,212,.25);
+  max-width:780px;width:100%;
+  max-height:88vh;
+  overflow-y:auto;
+  position:relative;
+  transform:translateY(28px);
+  transition:transform .35s cubic-bezier(.2,0,.2,1);
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,245,212,.2) transparent;
+}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-box::before{
+  content:'';position:sticky;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--teal),transparent);
+  display:block;
+}
+.modal-head{
+  display:flex;align-items:center;gap:1rem;
+  padding:1.4rem 1.8rem 1rem;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;
+  background:var(--bg2);
+  z-index:10;
+}
+.modal-back{
+  display:flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);cursor:none;border:1px solid rgba(0,245,212,.25);
+  padding:.3rem .8rem;background:rgba(0,245,212,.04);
+  transition:all .2s;flex-shrink:0;
+}
+.modal-back:hover{background:rgba(0,245,212,.1);}
+.modal-back svg{width:14px;height:14px;transition:transform .2s;}
+.modal-back:hover svg{transform:translateX(-3px);}
+.modal-head-badge{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .7rem;border:1px solid;margin-left:auto;}
+.modal-body{padding:1.8rem;}
+.modal-title{font-family:var(--head);font-size:1.35rem;font-weight:800;color:var(--white);line-height:1.35;margin-bottom:.9rem;}
+.modal-meta{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.4rem;}
+.modal-meta-item{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.22rem .75rem;border:1px solid var(--border);}
+.modal-section-head{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin:1.6rem 0 .7rem;display:flex;align-items:center;gap:.6rem;}
+.modal-section-head::before{content:'//';color:var(--muted);}
+.modal-text{font-size:.9rem;line-height:1.88;color:var(--text);opacity:.88;}
+.modal-text strong{color:var(--amber);}
+.modal-highlight{
+  background:rgba(0,245,212,.04);
+  border:1px solid rgba(0,245,212,.15);
+  border-left:2px solid var(--teal);
+  padding:1rem 1.2rem;
+  margin:1.2rem 0;
+  font-size:.87rem;line-height:1.8;color:var(--text);
+}
+.modal-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;margin:1.2rem 0;}
+.mm{border:1px solid var(--border);padding:1rem .8rem;text-align:center;background:rgba(255,255,255,.01);}
+.mm-val{font-family:var(--head);font-size:1.5rem;font-weight:800;color:var(--amber);display:block;line-height:1;margin-bottom:.3rem;}
+.mm-lbl{font-family:var(--mono);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.modal-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem;}
+.modal-tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .6rem;border:1px solid rgba(255,170,0,.2);color:var(--amber);}
+.modal-github{
+  display:inline-flex;align-items:center;gap:.65rem;
+  margin-top:1.8rem;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#03050f;background:var(--teal);
+  padding:.7rem 1.4rem;text-decoration:none;cursor:pointer;
+  font-weight:700;transition:all .25s;border:none;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.modal-github:hover{background:#00ffd9;transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,245,212,.25);}
+.modal-github svg{width:16px;height:16px;flex-shrink:0;}
+
+/* multi-paper blocks inside modal */
+.modal-paper-block{
+  border:1px solid var(--border);
+  padding:1.4rem 1.6rem;
+  margin-bottom:1.2rem;
+  background:rgba(255,255,255,.015);
+  position:relative;
+}
+.modal-paper-block::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--teal),var(--violet));
+}
+.modal-paper-num{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;
+}
+.modal-paper-num span{
+  padding:.18rem .6rem;border:1px solid rgba(0,245,212,.25);
+  background:rgba(0,245,212,.05);
+}
+.modal-paper-title{font-family:var(--head);font-weight:700;font-size:.95rem;color:var(--white);margin-bottom:.6rem;line-height:1.4;}
+.modal-paper-venue{font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.7rem;}
+.modal-paper-authors{font-size:.8rem;color:rgba(168,184,216,.7);margin-bottom:.8rem;line-height:1.5;}
+.modal-paper-authors b{color:rgba(0,245,212,.8);}
+.modal-paper-abstract{font-size:.86rem;color:var(--text);line-height:1.85;opacity:.85;}
+.modal-paper-abstract b{color:var(--amber);}
+.modal-paper-hl{
+  background:rgba(0,245,212,.04);border:1px solid rgba(0,245,212,.12);
+  border-left:2px solid var(--teal);padding:.85rem 1rem;
+  margin:.8rem 0 0;font-size:.84rem;color:var(--text);line-height:1.75;
+}
+.modal-paper-metrics{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.9rem;}
+.mpm{border:1px solid var(--border);padding:.7rem .8rem;text-align:center;background:rgba(255,255,255,.01);min-width:90px;}
+.mpm-val{font-family:var(--head);font-size:1.2rem;font-weight:800;color:var(--amber);display:block;line-height:1;margin-bottom:.2rem;}
+.mpm-lbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+
+/* â”€â”€ SEPARATE PROJECTS SECTION â”€â”€ */
+#side-projects{background:var(--bg);}
+.sproj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.8rem;}
+.sproj-card{
+  border:1px solid var(--border);
+  padding:2rem;background:rgba(255,255,255,.015);
+  position:relative;overflow:hidden;
+  transition:transform .3s,border-color .3s;
+  cursor:none;
+}
+.sproj-card:hover{transform:translateY(-6px);border-color:rgba(255,170,0,.5);}
+.sproj-aura{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,0,.12),transparent 70%);top:-60px;right:-60px;pointer-events:none;transition:all .5s;}
+.sproj-card:hover .sproj-aura{width:230px;height:230px;top:-100px;right:-100px;}
+.sproj-badge{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;padding:.22rem .75rem;margin-bottom:.9rem;border:1px solid rgba(0,245,212,.3);color:var(--teal);background:rgba(0,245,212,.05);}
+.sproj-title{font-family:var(--head);font-weight:700;font-size:1rem;color:var(--white);margin-bottom:.75rem;line-height:1.4;}
+.sproj-desc{font-size:.82rem;color:rgba(168,184,216,.6);line-height:1.75;margin-bottom:1.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.sproj-read-btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(255,170,0,.25);padding:.3rem .9rem;background:rgba(255,170,0,.04);cursor:none;transition:all .25s;}
+.sproj-read-btn:hover{background:rgba(255,170,0,.1);border-color:var(--amber);}
+.sproj-read-btn .arr{transition:transform .2s;}
+.sproj-read-btn:hover .arr{transform:translateX(3px);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.on{opacity:1;transform:translateY(0);}
+@keyframes rise{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:960px){.hero-grid,.about-grid,.ct-wrap{grid-template-columns:1fr;}.hero-panel{height:320px;}.nav-links{gap:1.2rem;}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<canvas id="bgCanvas"></canvas>
+
+<!-- PUBLICATION POPUP MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-head">
+      <button class="modal-back" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <span class="modal-head-badge" id="modalBadge"></span>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SU<em>::</em>portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Exp</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-pill">Open to Internships S'26</div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="h-ey">// AI Â· Electronics Â· Photonics Engineer</div>
+      <h1 class="h-name">Siddhesh<br><span class="ghost">Uttarwar</span></h1>
+      <div class="h-role" id="tw"></div>
+      <p class="h-desc">M.S. ECE researcher at UCSB fusing silicon engineering, optical physics, and intelligent systems â€” from reversible-logic VLSI circuits to enterprise platforms at Oracle.</p>
+      <div class="h-btns">
+        <a href="#projects" class="btn btn-teal">View Projects</a>
+        <a href="#contact" class="btn btn-amber">Let's Connect</a>
+      </div>
+      <div class="h-chips">
+        <span class="hchip">Reversible Logic</span>
+        <span class="hchip">VLSI</span>
+        <span class="hchip">Photonics</span>
+        <span class="hchip">ASIC Flow</span>
+        <span class="hchip">Verilog HDL</span>
+        <span class="hchip">Quantum Cost</span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="panel-label">
+        <span>NEURAL INFERENCE ENGINE v2.4</span>
+        <span class="panel-status">ACTIVE</span>
+      </div>
+      <canvas id="heroCanvas"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="s-ey">Who I Am</div>
+  <div class="s-title">About <span class="hi">Me</span></div>
+  <div class="about-grid">
+    <div class="reveal">
+      <p class="ab-p">I'm <strong>Siddhesh Uttarwar</strong> â€” an ECE graduate student at <strong>UC Santa Barbara</strong> with a focus on Electronics & Photonics. My research spans reversible-logic VLSI design, high-speed arithmetic circuits, and semiconductor device physics.</p>
+      <p class="ab-p">Before UCSB, I spent two years at <strong>Oracle</strong> engineering enterprise C2M/AMS modules in OUAF, cutting data-migration runtime by 25% via optimized PL/SQL and automating configurations with Groovy Scripts.</p>
+      <p class="ab-p">I have <strong>4 IEEE publications</strong> and a granted <strong>Indian Patent</strong> â€” all focused on reversible logic, energy-efficient arithmetic, and next-generation silicon design, validated using Verilog HDL on Xilinx Vivado.</p>
+      <div class="terminal">
+        <div class="t-bar"><span class="td"></span><span class="td"></span><span class="td"></span></div>
+        <div style="margin-top:.9rem;">
+          <div><span class="tc">siddhesh@ucsb</span><span class="tm">:~$</span> <span class="tg">whoami</span></div>
+          <div><span class="tw">&gt; M.S. ECE | Electronics &amp; Photonics | UCSB</span></div>
+          <div><span class="tc">siddhesh@ucsb</span><span class="tm">:~$</span> <span class="tg">cat research.json</span></div>
+          <div><span class="tm">{</span></div>
+          <div>&nbsp;&nbsp;<span class="ta">"focus"</span>: <span class="tw">["Reversible Logic","VLSI","ASIC","Photonics"],</span></div>
+          <div>&nbsp;&nbsp;<span class="ta">"tools"</span>: <span class="tw">["Verilog HDL","Xilinx Vivado","Cadence"],</span></div>
+          <div>&nbsp;&nbsp;<span class="ta">"status"</span>: <span style="color:#00ff9d">"seeking_summer_2026_internship"</span></div>
+          <div><span class="tm">}</span></div>
+          <div><span class="tc">siddhesh@ucsb</span><span class="tm">:~$</span> <span class="bc">â–‹</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="edu-card">
+        <div class="edu-deg">M.S. Electrical & Computer Engineering</div>
+        <div class="edu-uni">University of California, Santa Barbara</div>
+        <div class="edu-yr">Sep 2025 â€“ Present Â· Electronics & Photonics</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-deg">B.Tech Electronics & Communication Eng.</div>
+        <div class="edu-uni">VNR VJIET, JNTU Hyderabad</div>
+        <div class="edu-yr">Aug 2019 â€“ May 2023 Â· Hyderabad, India</div>
+      </div>
+      <div class="stat-quad">
+        <div class="sq"><span class="sq-n">4</span><span class="sq-l">IEEE Papers</span></div>
+        <div class="sq"><span class="sq-n">1</span><span class="sq-l">Patent</span></div>
+        <div class="sq"><span class="sq-n">22%</span><span class="sq-l">QC Reduction</span></div>
+        <div class="sq"><span class="sq-n">2+</span><span class="sq-l">Yrs Industry</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="s-ey">Career</div>
+  <div class="s-title">Professional <span class="hi">Experience</span></div>
+  <div class="exp-card reveal">
+    <div class="exp-hd">
+      <div><div class="exp-role">Consulting Developer</div><div class="exp-co">Oracle Â· Hyderabad, India</div></div>
+      <div class="exp-tag">Aug 2023 â€“ Aug 2025</div>
+    </div>
+    <ul class="exp-ul">
+      <li>Built core enterprise modules in Oracle Utilities Application Framework (OUAF) for C2M and AMS systems.</li>
+      <li>Optimized PL/SQL data-migration scripts, reducing runtime by <strong>25%</strong> across large-scale pipelines.</li>
+      <li>Automated system configurations via Groovy Scripts, cutting manual setup by <strong>30%</strong>.</li>
+      <li>Led on-site User Acceptance Testing â€” achieved <strong>zero post-deployment defects</strong> on all managed releases.</li>
+    </ul>
+  </div>
+  <div class="exp-card reveal">
+    <div class="exp-hd">
+      <div><div class="exp-role">Graduate Researcher</div><div class="exp-co">UC Santa Barbara Â· Santa Barbara, CA</div></div>
+      <div class="exp-tag">Sep 2025 â€“ Present</div>
+    </div>
+    <ul class="exp-ul">
+      <li>M.S. ECE â€” emphasis on Electronics &amp; Photonics at UCSB.</li>
+      <li>Coursework: CMOS Digital IC Design, Semiconductor Device Fabrication, Device Physics, Engineering Quantum Mechanics, Neuromorphic Computing.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PROJECTS & PUBLICATIONS -->
+<section id="projects">
+  <div class="s-ey">Research Â· Engineering Â· Innovation</div>
+  <div class="s-title">Projects &amp; <span class="hi">Publications</span></div>
+  <div class="pub-grid">
+
+    <!-- PROJECT 1: Reversible Logic Computing Systems -->
+    <div class="pub-card reveal" onclick="openModal('proj_rl')">
+      <div class="pub-aura"></div>
+      <div class="proj-pub-count">3 IEEE Publications</div>
+      <span class="pub-badge ieee">â— Research Project Â· 2022â€“2024</span>
+      <div class="pub-title">Reversible Logic Computing Systems</div>
+      <div class="pub-abstract-short">End-to-end research on energy-efficient, zero-entropy digital logic â€” designing optimized comparators, arithmetic units, and sequential circuits using reversible gate families for quantum and low-power VLSI.</div>
+      <div class="proj-paper-pills">
+        <span class="ppill">Comparator Tree Â· IACIS 2024</span>
+        <span class="ppill">Adder/Subtractor Â· ICEES 2024</span>
+        <span class="ppill">Shift Register Â· ICESC 2024</span>
+      </div>
+      <div class="tags" style="margin-top:.9rem;"><span class="tag">Reversible Logic</span><span class="tag">Quantum Cost</span><span class="tag">VLSI</span><span class="tag">Verilog HDL</span></div>
+      <div class="pub-read-btn" style="margin-top:1.2rem;">View Project &amp; Papers <span class="arr">â†’</span></div>
+    </div>
+
+    <!-- PROJECT 2: High-Speed Arithmetic Unit Design -->
+    <div class="pub-card reveal" onclick="openModal('proj_vedic')">
+      <div class="pub-aura"></div>
+      <div class="proj-pub-count">1 IEEE Paper Â· 1 Patent</div>
+      <span class="pub-badge patent">â— Research Project Â· 2022â€“2023</span>
+      <div class="pub-title">High-Speed Arithmetic Unit Design for DSP</div>
+      <div class="pub-abstract-short">Designed a high-performance Vedic multiplier architecture leveraging ancient Urdhva Tiryagbhyam mathematics combined with Brent Kung parallel prefix adders â€” achieving best-in-class silicon delay and area for DSP pipelines.</div>
+      <div class="proj-paper-pills">
+        <span class="ppill">Vedic Multiplier Â· ICCCNT 2022</span>
+        <span class="ppill">Prime Bit Multiplier Â· Indian Patent 2023</span>
+      </div>
+      <div class="tags" style="margin-top:.9rem;"><span class="tag">Vedic Multiplier</span><span class="tag">Brent Kung</span><span class="tag">DSP</span><span class="tag">Indian Patent</span></div>
+      <div class="pub-read-btn" style="margin-top:1.2rem;">View Project &amp; Papers <span class="arr">â†’</span></div>
+    </div>
+
+    <!-- PROJECT 3: Smart RFID Campus System -->
+    <div class="pub-card reveal" onclick="openModal('proj_rfid')">
+      <div class="pub-aura"></div>
+      <div class="proj-pub-count">ðŸ¥ˆ GYSC Silver Innovation Award</div>
+      <span class="pub-badge award">â— IoT Project Â· 2022</span>
+      <div class="pub-title">Smart RFID-Based University Identity &amp; Access System</div>
+      <div class="pub-abstract-short">IoT-enabled multi-functional campus identity platform unifying tap-to-pay dining, RFID library access control, and dynamic QR-code-based identity verification in a single embedded system.</div>
+      <div class="proj-paper-pills">
+        <span class="ppill">Embedded C Â· RFID</span>
+        <span class="ppill">IoT Backend</span>
+        <span class="ppill">QR Verification</span>
+      </div>
+      <div class="tags" style="margin-top:.9rem;"><span class="tag">RFID</span><span class="tag">IoT</span><span class="tag">Embedded C</span><span class="tag">Microcontroller</span></div>
+      <div class="pub-read-btn" style="margin-top:1.2rem;">View Project <span class="arr">â†’</span></div>
+    </div>
+
+    <!-- PROJECT 4: SOI Optomechanical Quantum Memory -->
+    <div class="pub-card reveal" onclick="openModal('proj_opto')">
+      <div class="pub-aura"></div>
+      <div class="proj-pub-count">ECE 220A Â· UCSB 2025</div>
+      <span class="pub-badge" style="border-color:rgba(139,92,246,.4);color:#b794f4;background:rgba(139,92,246,.05);">â— Photonics Â· Nanofabrication</span>
+      <div class="pub-title">SOI Optomechanical Quantum Memory Device</div>
+      <div class="pub-abstract-short">Full-flow SOI nanofabrication design of a photonic-crystal nanobeam optomechanical cavity for quantum memory â€” co-localizing optical and mechanical modes on a 220 nm silicon device layer with selective BHF release.</div>
+      <div class="proj-paper-pills">
+        <span class="ppill">Photonic Crystal Nanobeam Cavity</span>
+        <span class="ppill">SOI Wafer Â· 220 nm Si / 2 Âµm BOX</span>
+        <span class="ppill">RIE + BHF Selective Release</span>
+        <span class="ppill">Coupling Waveguide Â· 450 nm wide</span>
+      </div>
+      <div class="tags" style="margin-top:.9rem;"><span class="tag">Optomechanics</span><span class="tag">Photonics</span><span class="tag">SOI MEMS</span><span class="tag">Nanofabrication</span></div>
+      <div class="pub-read-btn" style="margin-top:1.2rem;">View Project <span class="arr">â†’</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="s-ey">Technical Expertise</div>
+  <div class="s-title">Skills &amp; <span class="hi">Tools</span></div>
+  <div class="skills-wrap">
+    <div class="sk-cat reveal">
+      <div class="sk-head">// Hardware Description</div>
+      <div class="sk-bars">
+        <div><div class="sk-label">Verilog / SystemVerilog<span>95%</span></div><div class="sk-track"><div class="sk-fill" data-w="95"></div></div></div>
+        <div><div class="sk-label">VHDL<span>80%</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+        <div><div class="sk-label">FPGA (Xilinx)<span>88%</span></div><div class="sk-track"><div class="sk-fill" data-w="88"></div></div></div>
+        <div><div class="sk-label">UVM / Tcl<span>70%</span></div><div class="sk-track"><div class="sk-fill" data-w="70"></div></div></div>
+      </div>
+    </div>
+    <div class="sk-cat reveal">
+      <div class="sk-head">// EDA Tools</div>
+      <div class="sk-bars">
+        <div><div class="sk-label">Xilinx Vivado<span>92%</span></div><div class="sk-track"><div class="sk-fill" data-w="92"></div></div></div>
+        <div><div class="sk-label">Cadence Virtuoso<span>82%</span></div><div class="sk-track"><div class="sk-fill" data-w="82"></div></div></div>
+        <div><div class="sk-label">Synopsys DC<span>75%</span></div><div class="sk-track"><div class="sk-fill" data-w="75"></div></div></div>
+        <div><div class="sk-label">MATLAB<span>80%</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+      </div>
+    </div>
+    <div class="sk-cat reveal">
+      <div class="sk-head">// Programming</div>
+      <div class="sk-bars">
+        <div><div class="sk-label">C / C++<span>90%</span></div><div class="sk-track"><div class="sk-fill" data-w="90"></div></div></div>
+        <div><div class="sk-label">Python<span>85%</span></div><div class="sk-track"><div class="sk-fill" data-w="85"></div></div></div>
+        <div><div class="sk-label">Java / Groovy<span>80%</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+        <div><div class="sk-label">Oracle SQL / PL/SQL<span>88%</span></div><div class="sk-track"><div class="sk-fill" data-w="88"></div></div></div>
+      </div>
+    </div>
+    <div class="sk-cat reveal">
+      <div class="sk-head">// Concepts</div>
+      <div class="sk-bars">
+        <div><div class="sk-label">Reversible Logic / QC<span>92%</span></div><div class="sk-track"><div class="sk-fill" data-w="92"></div></div></div>
+        <div><div class="sk-label">CMOS IC / ASIC Flow<span>88%</span></div><div class="sk-track"><div class="sk-fill" data-w="88"></div></div></div>
+        <div><div class="sk-label">Semiconductor Fab<span>75%</span></div><div class="sk-track"><div class="sk-fill" data-w="75"></div></div></div>
+        <div><div class="sk-label">Static Timing Analysis<span>80%</span></div><div class="sk-track"><div class="sk-fill" data-w="80"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="s-ey">Recognition</div>
+  <div class="s-title">Achievements &amp; <span class="hi">Leadership</span></div>
+  <div class="ach-grid">
+    <div class="ach-card reveal"><div class="ach-ico">ðŸ“„</div><div><div class="ach-ttl">4 IEEE Conference Papers</div><div class="ach-txt">Published at IACIS 2024, ICEES 2024, ICESC 2024, and ICCCNT 2022 â€” all focused on reversible logic and energy-efficient VLSI design.</div></div></div>
+    <div class="ach-card reveal"><div class="ach-ico">ðŸ›ï¸</div><div><div class="ach-ttl">Indian Patent â€” Vedic Multiplier</div><div class="ach-txt">Granted patent (App. No. 202341051131) for an efficient prime-bit Vedic multiplier optimized for double-precision floating-point DSP computation.</div></div></div>
+    <div class="ach-card reveal"><div class="ach-ico">âš¡</div><div><div class="ach-ttl">Technical Head â€” ISTE VNRVJIET</div><div class="ach-txt">Led hackathons, startup competitions, and mentored 50+ students across the engineering society at VNR VJIET.</div></div></div>
+    <div class="ach-card reveal"><div class="ach-ico">âœ…</div><div><div class="ach-ttl">UAT Lead â€” Oracle</div><div class="ach-txt">Managed User Acceptance Testing across major Oracle releases â€” zero post-deployment defects on all managed deployments.</div></div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="s-ey">Get in Touch</div>
+  <div class="s-title">Let's <span class="hi">Connect</span></div>
+  <div class="ct-wrap">
+    <div class="ct-copy reveal">
+      <p>I'm pursuing my Master's at UCSB and open to Summer 2026 internship opportunities in VLSI, semiconductor engineering, AI hardware, photonics, and related fields. Let's build something great.</p>
+      <a href="mailto:uttarwarsiddhesh@gmail.com" class="btn btn-teal">Send Email</a>
+    </div>
+    <div class="ct-links reveal">
+      <a href="mailto:uttarwarsiddhesh@gmail.com" class="cl"><span class="cl-ico">✉</span><div><span class="cl-lbl">Email</span><span class="cl-val">uttarwarsiddhesh@gmail.com</span></div></a>
+      <a href="tel:+19254577436" class="cl"><span class="cl-ico">â˜Ž</span><div><span class="cl-lbl">Phone</span><span class="cl-val">+1 (925) 457-7436</span></div></a>
+      <a href="https://linkedin.com/in/SiddheshUttarwar" target="_blank" class="cl"><span class="cl-ico" style="font-size:.72rem;font-weight:700;">in</span><div><span class="cl-lbl">LinkedIn</span><span class="cl-val">Siddhesh Uttarwar</span></div></a>
+      <a href="https://github.com/SiddheshUttarwar" target="_blank" class="cl"><span class="cl-ico">âŒ¥</span><div><span class="cl-lbl">GitHub</span><span class="cl-val">SiddheshUttarwar</span></div></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-brand">Siddhesh Uttarwar</div>
+  <div class="ft-copy">Â© 2026 Â· UCSB ECE Â· AI + Photonics + Silicon</div>
+</footer>
+
+<script>
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROJECT DATA  (multi-paper)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+const PUBS = {
+
+  /* â”€â”€ PROJECT 1: Reversible Logic Computing Systems â”€â”€ */
+  proj_rl:{
+    badge:'Research Project Â· Reversible Logic', badgeClass:'ieee',
+    title:'Reversible Logic Computing Systems',
+    subtitle:'Energy-efficient digital logic design for quantum computing and low-power VLSI â€” spanning combinational arithmetic, sequential circuits, and hierarchical comparison trees.',
+    tools:'Xilinx Vivado 2022.2 Â· Verilog HDL Â· NIT Warangal Â· VNR VJIET',
+    github:'https://github.com/SiddheshUttarwar/YOUR-REPO-LINK-HERE',
+    overallTags:['Reversible Logic','Quantum Cost','Low Power','VLSI','Verilog HDL','Feynman Gate','HNG Gate','FPGA'],
+    papers:[
+      {
+        num:'Publication 01', badge:'IEEE Â· IACIS 2024',
+        title:'A Comparator Tree Design with Optimized Quantum Cost Using Reversible Logic Techniques',
+        venue:'2024 Int. Conf. on Intelligent Algorithms for Computational Intelligence Systems (IACIS) Â· DOI: 10.1109/IACIS61494.2024.10721638',
+        authors:'Aruru Sai Kumar, Anreddy Ramya, <b>U. Siddhesh</b>, Nati Yamini Meera, Tejaswini Kandimalla, P. Abhishek Â· VNR VJIET / NIT Warangal',
+        abstract:`Designed highly efficient <b>2-bit, 8-bit, and 64-bit comparators</b> using TR gate, Feynman gate, and UPG gate families. The comparator tree uses a hierarchical binary structure enabling logarithmic time complexity â€” critical for high-speed quantum and nanoscale circuits.`,
+        highlight:'8-bit: QC=128, Delay=35 units (vs. prior QC=321, Delay=199). 64-bit: QC=1136, Delay=68 (vs. QC=2505, Delay=1543 state-of-the-art).',
+        metrics:[{val:'20',lbl:'2-Bit QC'},{val:'128',lbl:'8-Bit QC'},{val:'1136',lbl:'64-Bit QC'},{val:'35',lbl:'8-Bit Delay'}]
+      },
+      {
+        num:'Publication 02', badge:'IEEE Â· ICEES 2024',
+        title:'An Efficient 8-Bit Adder/Subtractor Design Utilizing Reversible Logic Techniques',
+        venue:'2024 10th Int. Conf. on Electrical Energy Systems (ICEES) Â· DOI: 10.1109/ICEES61253.2024.10776875',
+        authors:'Aruru Sai Kumar, K Charan Kumar, <b>U. Siddhesh</b>, Golconda Bhavani, G Harshitha, Guduru Niharika Â· VNR VJIET / B.V. Raju Institute',
+        abstract:`Designed an <b>8-bit adder/subtractor circuit</b> using Feynman and HNG reversible gates with a single control bit (M=0: addition, M=1: subtraction via 2's complement). When D=0, the HNG gate functions as a full adder computing Sum=AâŠ•BâŠ•C and Carry=(AâŠ•B)C+AB â€” minimizing ancilla inputs and garbage outputs.`,
+        highlight:'Achieved 22% reduction in quantum cost (QC=56 vs. best prior QC=72). Gate count: 16. Garbage outputs: 17. Total TRLIC reduced to 98.',
+        metrics:[{val:'22%',lbl:'QC Reduction'},{val:'56',lbl:'Quantum Cost'},{val:'16',lbl:'Gate Count'},{val:'98',lbl:'TRLIC'}]
+      },
+      {
+        num:'Publication 03', badge:'IEEE Â· ICESC 2024',
+        title:'Design and Optimization of Universal Shift Registers Using Novel Reversible Logic Gates',
+        venue:'2024 5th Int. Conf. on Electronics and Sustainable Communication Systems (ICESC) Â· DOI: 10.1109/ICESC60852.2024.10689895',
+        authors:'Sarangam K, Aruru Sai Kumar, V Mosherani, <b>U. Siddhesh</b>, Naragani Kalyani, Durgam Mounika Â· NIT Warangal / VNR VJIET / HITAM',
+        abstract:`Designed a <b>4-bit Reversible Universal Shift Register (RUSR)</b> using a novel Reversible 4Ã—1 Multiplexer (RMUX) and Reversible Master-Slave D Flip-Flop (RDFF). The RDFF uses two D latches with a Feynman gate; the RMUX uses three 2Ã—1 reversible MUXes. Supports 4 modes: No Change, Right Shift, Left Shift, and Parallel Load via S1/S0 control signals.`,
+        highlight:'Proposed 4-bit RUSR: 28 gates, 20 garbage outputs, QC=98 â€” best among 5 compared architectures. Prior best: QC=108, 40 garbage outputs.',
+        metrics:[{val:'28',lbl:'Gate Count'},{val:'20',lbl:'Garbage Out'},{val:'98',lbl:'Quantum Cost'},{val:'4',lbl:'Op Modes'}]
+      }
+    ]
+  },
+
+  /* â”€â”€ PROJECT 2: High-Speed Arithmetic Unit Design â”€â”€ */
+  proj_vedic:{
+    badge:'Research Project Â· VLSI Arithmetic', badgeClass:'patent',
+    title:'High-Speed Arithmetic Unit Design for DSP',
+    subtitle:'Designed and patented a Vedic-mathematics-based high-speed multiplier architecture combining Urdhva Tiryagbhyam sutra with Brent Kung parallel prefix adders â€” achieving record silicon delay for DSP floating-point pipelines.',
+    tools:'Verilog HDL Â· Xilinx Vivado 14.7 / 2022.2 Â· VNR VJIET, Hyderabad',
+    github:'https://github.com/SiddheshUttarwar/YOUR-REPO-LINK-HERE',
+    overallTags:['Vedic Multiplier','Brent Kung Adder','Floating Point','DSP','Indian Patent','Verilog HDL','VLSI','Low Area'],
+    papers:[
+      {
+        num:'Publication 01', badge:'IEEE Â· ICCCNT 2022',
+        title:'Design of High Speed 8-bit Vedic Multiplier using Brent Kung Adders',
+        venue:'2022 13th Int. Conf. on Computing, Communication and Networking Technologies (ICCCNT) Â· DOI: 10.1109/ICCCNT54827.2022.9984591',
+        authors:'Aruru Sai Kumar, <b>U. Siddhesh</b>, N. Sai Kiran, K. Bhavitha Â· VNR VJIET, Hyderabad',
+        abstract:`Proposed a <b>high-speed 8Ã—8 Vedic multiplier</b> combining the Urdhva Tiryagbhyam sutra with Brent Kung parallel prefix adders. Four 4-bit sub-multipliers feed two 8-bit and one 4-bit Brent Kung adder, eliminating the ripple carry bottleneck. Architecture employs 32 HA, 64 AND gates, three 4-bit BKAs, two 8-bit BKAs, and one 2-bit BKA.`,
+        highlight:'Achieved 7.762 ns delay at 13 logic levels â€” outperforming Array (12.934 ns), Dadda (9.745 ns), Wallace Tree (7.815 ns), and existing Vedic (9.130 ns).',
+        metrics:[{val:'7.762',lbl:'Delay (ns)'},{val:'13',lbl:'Logic Levels'},{val:'8Ã—8',lbl:'Bit Width'},{val:'#1',lbl:'Fastest'}]
+      },
+      {
+        num:'Patent', badge:'Indian Patent Â· 2023',
+        title:'Efficient Prime Bit Vedic Multiplier for Double Precision Floating Point Numbers',
+        venue:'Patent Office Journal No. 35/2023 Â· Govt. of India Â· App. No. 202341051131 Â· Filed: 29/07/2023 Â· Published: 01/09/2023',
+        authors:'Dr. Aruru Sai Kumar, N Neelima, <b>Siddhesh Uttarwar</b> Â· VNR VJIET, Hyderabad â€“ 500090',
+        abstract:`Patent for a <b>Prime Bit Vedic Multiplier</b> targeting double-precision floating-point DSP multiplication. Focuses on the mantissa multiplication stage with an architecture optimized for reduced silicon area and propagation delay. IPC Classes: G06F7/499, G06F7/483, G06F7/533, G06F30/33, G06N3/04.`,
+        highlight:'7 claims across 27 pages. Significantly reduces area and delay for double-precision FP multiplication vs. conventional approaches. Granted by the Government of India.',
+        metrics:[{val:'7',lbl:'Claims'},{val:'27',lbl:'Pages'},{val:'2023',lbl:'Granted'},{val:'India',lbl:'Jurisdiction'}]
+      }
+    ]
+  },
+
+  /* â”€â”€ PROJECT 3: Smart RFID Campus System â”€â”€ */
+  proj_rfid:{
+    badge:'IoT Engineering Project Â· 2022', badgeClass:'award',
+    title:'Smart RFID-Based University Identity & Access System',
+    subtitle:'End-to-end IoT embedded system unifying campus tap-to-pay, RFID access control, and QR-based identity verification â€” awarded GYSC Silver Innovation Award.',
+    tools:'Embedded C Â· RFID Module Â· Microcontroller Â· IoT Backend Â· QR Code API',
+    github:'https://github.com/SiddheshUttarwar/YOUR-REPO-LINK-HERE',
+    overallTags:['RFID','IoT','Embedded C','Smart Campus','Access Control','QR Code','Microcontroller','Tap-to-Pay'],
+    papers:[
+      {
+        num:'Project Overview', badge:'ðŸ¥ˆ GYSC Silver Innovation Award',
+        title:'Smart RFID-Based University Identity & Access System',
+        venue:'GYSC (Global Youth Science Congress) Innovation Competition Â· VNR VJIET, Hyderabad Â· 2022',
+        authors:'<b>Siddhesh Uttarwar</b> Â· Team Project Â· VNR VJIET',
+        abstract:`An IoT-enabled smart campus identity platform that <b>unifies three campus systems</b> into a single RFID-based card: (1) <b>Tap-to-pay dining</b> â€” real-time balance deduction via RFID scan at canteen terminals; (2) <b>Library access control</b> â€” RFID-gated entry with server-side authorization; (3) <b>QR-code identity verification</b> â€” dynamically generated QR codes for secondary gate verification and event check-in. The embedded system communicates with a backend server over WiFi for real-time data sync and access logging.`,
+        highlight:'Selected as a top innovation at GYSC and awarded the Silver Innovation Award. Live prototype demonstrated on campus with multi-zone access and payments running simultaneously.',
+        metrics:[{val:'3',lbl:'Modules'},{val:'ðŸ¥ˆ',lbl:'GYSC Award'},{val:'Live',lbl:'Prototype'},{val:'IoT',lbl:'Platform'}]
+      }
+    ]
+  },
+
+  /* â”€â”€ PROJECT 4: SOI Optomechanical Quantum Memory â”€â”€ */
+  proj_opto:{
+    badge:'Photonics Â· Nanofabrication Â· UCSB 2025', badgeClass:'opto',
+    title:'SOI Optomechanical Quantum Memory Device',
+    subtitle:'Full-flow Silicon-On-Insulator nanofabrication design of a photonic-crystal nanobeam optomechanical cavity for quantum memory applications â€” co-localizing optical and mechanical resonance modes on a 220 nm SOI platform with selective BHF oxide release.',
+    tools:'SOI Wafer (220 nm Si / 2 Âµm BOX) Â· RIE (SFâ‚† plasma) Â· BHF Wet Etch Â· Karl Suss MJB3 Contact Aligner Â· AZ4110 Photoresist Â· KLA Alphastep D300 Profilometer Â· UCSB Nanofabrication Facility',
+    github:'https://github.com/SiddheshUttarwar/YOUR-REPO-LINK-HERE',
+    overallTags:['Optomechanics','SOI MEMS','Photonic Crystal','Nanofabrication','RIE','BHF Release','Quantum Memory','UCSB ECE 220A'],
+    papers:[
+      {
+        num:'Course Project', badge:'ECE 220A Â· Semiconductor Device Processing Â· UCSB 2025',
+        title:'Design of SOI Optomechanical Quantum Memory Structure',
+        venue:'ECE 220A: Semiconductor Device Processing Â· Dept. of ECE, University of California, Santa Barbara Â· Perm No.: A584P38',
+        authors:'<b>Siddhesh Parag Uttarwar</b> Â· University of California, Santa Barbara',
+        abstract:`Designed the complete fabrication flow for an <b>SOI optomechanical quantum memory device</b> on a 220 nm silicon-on-insulator platform. The device features a <b>photonic crystal nanobeam cavity</b> (15 Âµm Ã— 500 nm) with a 13-hole 1D photonic crystal array â€” mirror holes at 120 nm radius and a tapered cavity region (80â€“110 nm radius at 400 nm pitch) â€” that co-localizes optical and mechanical resonance modes. A 450 nm wide evanescent <b>coupling waveguide</b> (18 Âµm long, 200 nm vertical gap) enables optical access without mechanical interference. The fabrication uses two lithography masks: <b>Mask 1</b> defines all silicon features (nanobeam, photonic crystal holes, coupling waveguide, release trenches, alignment marks) transferred via SFâ‚† RIE down to the BOX etch stop; <b>Mask 2</b> selectively protects the waveguide during BHF wet release. Lateral undercut is estimated via L â‰ˆ R<sub>ox</sub>Â·t with design constraint D â‰¥ 2L to guarantee waveguide mechanical support.`,
+        highlight:`The BOX release step using BHF is the most critical process step â€” etch time is calibrated using on-die test structures to satisfy D â‰¥ 2L, ensuring full nanobeam suspension while preserving coupling waveguide support. No metallization is used â€” device operation is purely optomechanical.`,
+        metrics:[
+          {val:'220 nm',lbl:'Si Device Layer'},
+          {val:'2 Âµm',lbl:'BOX Thickness'},
+          {val:'13',lbl:'Photonic Crystal Holes'},
+          {val:'500 nm',lbl:'Nanobeam Width'}
+        ]
+      },
+      {
+        num:'Fabrication Flow', badge:'6-Step Process Sequence',
+        title:'Full Fabrication Sequence: SOI Wafer â†’ Suspended Nanobeam',
+        venue:'UCSB Nanofabrication Facility Â· ECE 220A Lab Process Documentation',
+        authors:'<b>Siddhesh Parag Uttarwar</b> Â· UCSB ECE',
+        abstract:`The complete 6-step fabrication flow: <b>(1) Starting SOI Wafer</b> â€” 220 nm p-type Si (100) / 2 Âµm thermally grown SiOâ‚‚ BOX / 500 Âµm handle Si. <b>(2) Photolithography 1 (Mask 1)</b> â€” AZ4110 positive resist on Karl Suss MJB3 aligner; defines nanobeam, photonic crystal holes, coupling waveguide, release trenches, and alignment marks in a single step to eliminate misalignment errors. <b>(3) RIE Silicon Etch</b> â€” SFâ‚† plasma in MRC RIE system anisotropically removes exposed Si down to BOX etch stop; verified by KLA Alphastep D300 profilometry (~220 nm step height). <b>(4) Photolithography 2 (Mask 2)</b> â€” AZ4110 resist protects coupling waveguide; opens windows only over nanobeam cavity and release trenches. <b>(5) BHF Selective BOX Release</b> â€” isotropic SiOâ‚‚ etch removes buried oxide beneath nanobeam through release trenches and photonic crystal holes; undercut estimated via L â‰ˆ R<sub>ox</sub>Â·t. <b>(6) Final Released Structure</b> â€” suspended nanobeam with intact waveguide on BOX; post-release metrology via optical microscopy and profilometry.`,
+        highlight:'All critical silicon features are defined in a single Mask 1 lithography step, eliminating inter-mask alignment errors between the cavity, waveguide, and release regions. No metallization required â€” optical tuning via laser power and wavelength.',
+        metrics:[
+          {val:'2',lbl:'Mask Layers'},
+          {val:'6',lbl:'Process Steps'},
+          {val:'120 nm',lbl:'Mirror Hole r'},
+          {val:'450 nm',lbl:'Waveguide Width'}
+        ]
+      }
+    ]
+  }
+};
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MODAL OPEN / CLOSE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+function openModal(id){
+  const p=PUBS[id];
+  if(!p) return;
+  const overlay=document.getElementById('modalOverlay');
+  const body=document.getElementById('modalBody');
+  const badge=document.getElementById('modalBadge');
+
+  badge.textContent=p.badge;
+  badge.className='modal-head-badge';
+  if(p.badgeClass==='ieee')    badge.style.cssText='border-color:rgba(0,130,255,.4);color:#4a9eff;';
+  else if(p.badgeClass==='patent') badge.style.cssText='border-color:rgba(255,170,0,.4);color:#ffaa00;';
+  else if(p.badgeClass==='award')  badge.style.cssText='border-color:rgba(0,255,157,.3);color:#00ff9d;';
+  else if(p.badgeClass==='opto')   badge.style.cssText='border-color:rgba(139,92,246,.4);color:#b794f4;';
+
+  // Build papers HTML
+  const papersHtml = p.papers.map((pp,i)=>{
+    const metricsHtml = pp.metrics.map(m=>`<div class="mpm"><span class="mpm-val">${m.val}</span><span class="mpm-lbl">${m.lbl}</span></div>`).join('');
+    return `
+      <div class="modal-paper-block">
+        <div class="modal-paper-num"><span>${pp.num}</span> ${pp.badge}</div>
+        <div class="modal-paper-title">${pp.title}</div>
+        <div class="modal-paper-venue">${pp.venue}</div>
+        <div class="modal-paper-authors">${pp.authors}</div>
+        <div class="modal-paper-abstract">${pp.abstract}</div>
+        <div class="modal-paper-hl">${pp.highlight}</div>
+        <div class="modal-paper-metrics">${metricsHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  const tagsHtml = p.overallTags.map(t=>`<span class="modal-tag">${t}</span>`).join('');
+
+  body.innerHTML=`
+    <div class="modal-title">${p.title}</div>
+    <div class="modal-text" style="margin-bottom:1.4rem;font-size:.9rem;opacity:.75;">${p.subtitle}</div>
+
+    <div class="modal-section-head">Publications &amp; Research</div>
+    ${papersHtml}
+
+    <div class="modal-section-head">Tools &amp; Implementation</div>
+    <div class="modal-text">${p.tools}</div>
+
+    <div class="modal-section-head">Keywords</div>
+    <div class="modal-tags">${tagsHtml}</div>
+
+    <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="modal-github">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      View on GitHub
+    </a>
+  `;
+
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('modalBox').scrollTop=0;
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// Close on overlay click
+document.getElementById('modalOverlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+// Close on Escape
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeModal();});
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CURSOR
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+const curEl=document.getElementById('cur'),ringEl=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;curEl.style.left=mx+'px';curEl.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ringEl.style.left=rx+'px';ringEl.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,.btn,.pub-card,.sproj-card,.sq,.ach-card,.exp-card,.hchip,.modal-back').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{curEl.style.width='18px';curEl.style.height='18px';curEl.style.background='var(--amber)';curEl.style.boxShadow='0 0 14px var(--amber)';ringEl.style.width='46px';ringEl.style.height='46px';});
+  el.addEventListener('mouseleave',()=>{curEl.style.width='8px';curEl.style.height='8px';curEl.style.background='var(--teal)';curEl.style.boxShadow='0 0 10px var(--teal)';ringEl.style.width='30px';ringEl.style.height='30px';});
+});
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   BACKGROUND CANVAS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+const BC=document.getElementById('bgCanvas');
+const bx=BC.getContext('2d');
+let BW,BH;
+function rbc(){BW=BC.width=window.innerWidth;BH=BC.height=window.innerHeight;}
+rbc();window.addEventListener('resize',rbc);
+const PHOTONS=55;
+const pts=Array.from({length:PHOTONS},()=>({
+  x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,
+  vy:-(Math.random()*.35+.1),vx:(Math.random()-.5)*.12,
+  r:Math.random()*1.6+.4,
+  color:Math.random()<.6?'0,245,212':'139,92,246',
+  alpha:Math.random()*.35+.1,phase:Math.random()*Math.PI*2
+}));
+function drawBG(t){
+  bx.clearRect(0,0,BW,BH);
+  const wcx=BW*.84,wcy=BH*.45;
+  for(let i=1;i<=6;i++){
+    const r=i*Math.min(BW,BH)*.062;
+    const pulse=0.4+0.3*Math.sin(t*.0004-i*.5);
+    bx.beginPath();bx.arc(wcx,wcy,r,0,Math.PI*2);
+    bx.strokeStyle=`rgba(255,170,0,${pulse*0.09})`;bx.lineWidth=i===1?1:.5;bx.stroke();
+  }
+  for(let a=0;a<Math.PI*2;a+=Math.PI/6){
+    const pulse=0.3+0.2*Math.sin(t*.0006+a);
+    bx.beginPath();bx.moveTo(wcx,wcy);
+    bx.lineTo(wcx+Math.cos(a)*Math.min(BW,BH)*.36,wcy+Math.sin(a)*Math.min(BW,BH)*.36);
+    bx.strokeStyle=`rgba(255,170,0,${pulse*0.045})`;bx.lineWidth=0.5;bx.stroke();
+  }
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.y<-10){p.y=BH+10;p.x=Math.random()*BW;}
+    if(p.x<0)p.x=BW;if(p.x>BW)p.x=0;
+    const f=0.5+0.5*Math.sin(t*.0025+p.phase);
+    const g=bx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+    g.addColorStop(0,`rgba(${p.color},${p.alpha*f})`);
+    g.addColorStop(1,`rgba(${p.color},0)`);
+    bx.beginPath();bx.arc(p.x,p.y,p.r*3,0,Math.PI*2);bx.fillStyle=g;bx.fill();
+  });
+  requestAnimationFrame(drawBG);
+}
+requestAnimationFrame(drawBG);
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO NEURAL NETWORK CANVAS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+const HC=document.getElementById('heroCanvas');
+const hx=HC.getContext('2d');
+function sizeHC(){const r=HC.parentElement.getBoundingClientRect();HC.width=Math.floor(r.width-48);HC.height=Math.floor(r.height-46);}
+sizeHC();window.addEventListener('resize',()=>{sizeHC();rebuildNet();});
+
+const ARCH=[4,5,5,3];
+const LAYER_LABELS=['Input','Hidden 1','Hidden 2','Output'];
+const NODE_LABELS=[['RTL','CMOS','FPGA','VLSI'],null,null,['AI','Opt','Fab']];
+
+let netLayers=[];
+function buildNet(W,H){
+  const mX=W*.12,layers=[];
+  const useW=W-mX*2;
+  ARCH.forEach((cnt,li)=>{
+    const x=mX+li*(useW/(ARCH.length-1));
+    const nodes=[];
+    const totH=(cnt-1)*58;
+    const sy=H/2-28-totH/2;
+    for(let ni=0;ni<cnt;ni++) nodes.push({x,y:sy+ni*58,phase:Math.random()*Math.PI*2});
+    layers.push(nodes);
+  });
+  return layers;
+}
+function rebuildNet(){netLayers=buildNet(HC.width,HC.height);}
+rebuildNet();
+
+const sigs=[];
+function spawnSig(){
+  if(sigs.length>16)return;
+  const li=Math.floor(Math.random()*(ARCH.length-1));
+  sigs.push({li,ni:Math.floor(Math.random()*ARCH[li]),nj:Math.floor(Math.random()*ARCH[li+1]),t:0,speed:.014+Math.random()*.008,color:Math.random()<.5?'0,245,212':'139,92,246'});
+}
+setInterval(spawnSig,280);
+let actPhase=0;
+
+function drawNet(ts){
+  const W=HC.width,H=HC.height;
+  if(W<=0||H<=0){requestAnimationFrame(drawNet);return;}
+  hx.clearRect(0,0,W,H);
+  actPhase=ts*.0014;
+
+  // grid
+  hx.strokeStyle='rgba(0,245,212,0.04)';hx.lineWidth=.5;
+  for(let x=0;x<W;x+=30){hx.beginPath();hx.moveTo(x,0);hx.lineTo(x,H);hx.stroke();}
+  for(let y=0;y<H;y+=30){hx.beginPath();hx.moveTo(0,y);hx.lineTo(W,y);hx.stroke();}
+
+  if(!netLayers.length){requestAnimationFrame(drawNet);return;}
+
+  // edges
+  for(let li=0;li<netLayers.length-1;li++){
+    netLayers[li].forEach((na,ni)=>{
+      netLayers[li+1].forEach((nb,nj)=>{
+        const act=0.28+0.38*Math.abs(Math.sin(actPhase-li*.8+ni*.4));
+        const g=hx.createLinearGradient(na.x,na.y,nb.x,nb.y);
+        g.addColorStop(0,`rgba(0,245,212,${act*.5})`);
+        g.addColorStop(1,`rgba(139,92,246,${act*.5})`);
+        hx.beginPath();hx.moveTo(na.x,na.y);hx.lineTo(nb.x,nb.y);
+        hx.strokeStyle=g;hx.lineWidth=0.85;hx.stroke();
+      });
+    });
+  }
+
+  // signals
+  for(let i=sigs.length-1;i>=0;i--){
+    const s=sigs[i];s.t+=s.speed;
+    if(s.t>=1){
+      if(s.li<ARCH.length-2){s.li++;s.ni=s.nj;s.nj=Math.floor(Math.random()*ARCH[s.li+1]);s.t=0;continue;}
+      sigs.splice(i,1);continue;
+    }
+    if(s.li>=netLayers.length-1)continue;
+    const na=netLayers[s.li][s.ni],nb=netLayers[s.li+1][s.nj];
+    if(!na||!nb)continue;
+    const px=na.x+(nb.x-na.x)*s.t,py=na.y+(nb.y-na.y)*s.t;
+    // trail
+    for(let k=1;k<=7;k++){
+      const tt=Math.max(0,s.t-k*.013);
+      const tx=na.x+(nb.x-na.x)*tt,ty=na.y+(nb.y-na.y)*tt;
+      hx.beginPath();hx.arc(tx,ty,2.2*(1-k/7),0,Math.PI*2);
+      hx.fillStyle=`rgba(${s.color},${0.55*(1-k/7)})`;hx.fill();
+    }
+    // head
+    const g=hx.createRadialGradient(px,py,0,px,py,10);
+    g.addColorStop(0,`rgba(${s.color},1)`);g.addColorStop(.4,`rgba(${s.color},.4)`);g.addColorStop(1,`rgba(${s.color},0)`);
+    hx.beginPath();hx.arc(px,py,10,0,Math.PI*2);hx.fillStyle=g;hx.fill();
+    hx.beginPath();hx.arc(px,py,3,0,Math.PI*2);hx.fillStyle=`rgba(${s.color},1)`;hx.fill();
+  }
+
+  // nodes
+  netLayers.forEach((layer,li)=>{
+    layer.forEach((node,ni)=>{
+      const act=0.45+0.55*Math.abs(Math.sin(actPhase-li*.9+ni*.5));
+      const nc=li===0?'255,170,0':li===netLayers.length-1?'255,60,172':'0,245,212';
+      // glow
+      const og=hx.createRadialGradient(node.x,node.y,0,node.x,node.y,20);
+      og.addColorStop(0,`rgba(${nc},${0.22*act})`);og.addColorStop(1,`rgba(${nc},0)`);
+      hx.beginPath();hx.arc(node.x,node.y,20,0,Math.PI*2);hx.fillStyle=og;hx.fill();
+      // ring
+      hx.beginPath();hx.arc(node.x,node.y,13,0,Math.PI*2);
+      hx.strokeStyle=`rgba(${nc},${0.35*act})`;hx.lineWidth=1;hx.stroke();
+      // core
+      hx.beginPath();hx.arc(node.x,node.y,7.5,0,Math.PI*2);
+      const fg=hx.createRadialGradient(node.x-2,node.y-2,0,node.x,node.y,7.5);
+      fg.addColorStop(0,`rgba(${nc},${act})`);fg.addColorStop(1,`rgba(${nc},${.5*act})`);
+      hx.fillStyle=fg;hx.fill();
+      hx.strokeStyle=`rgba(${nc},0.8)`;hx.lineWidth=.8;hx.stroke();
+      // labels
+      const lbl=NODE_LABELS[li]&&NODE_LABELS[li][ni];
+      if(lbl){
+        hx.font='bold 9px Share Tech Mono';
+        hx.fillStyle=`rgba(${nc},${0.85*act})`;
+        hx.textAlign='center';
+        hx.fillText(lbl,node.x,li===0?node.y-20:node.y+26);
+      }
+    });
+  });
+
+  // layer labels
+  netLayers.forEach((layer,li)=>{
+    if(!layer.length)return;
+    const cx=layer[0].x;
+    const bot=Math.max(...layer.map(n=>n.y))+36;
+    hx.font='9px Share Tech Mono';hx.fillStyle='rgba(0,245,212,0.5)';
+    hx.textAlign='center';hx.fillText(LAYER_LABELS[li],cx,bot);
+  });
+
+  // photon wave
+  const wY=H-18;
+  hx.beginPath();
+  for(let x=0;x<=W;x+=2){
+    const y=wY+9*Math.sin(.04*x+ts*.003);
+    x===0?hx.moveTo(x,y):hx.lineTo(x,y);
+  }
+  hx.strokeStyle='rgba(0,245,212,0.32)';hx.lineWidth=1.4;hx.stroke();
+  const pkx=(ts*.24)%W;
+  const pky=wY+9*Math.sin(.04*pkx+ts*.003);
+  const pkg=hx.createRadialGradient(pkx,pky,0,pkx,pky,7);
+  pkg.addColorStop(0,'rgba(0,245,212,.95)');pkg.addColorStop(1,'rgba(0,245,212,0)');
+  hx.beginPath();hx.arc(pkx,pky,7,0,Math.PI*2);hx.fillStyle=pkg;hx.fill();
+
+  hx.font='8px Share Tech Mono';hx.fillStyle='rgba(0,245,212,0.38)';hx.textAlign='left';
+  hx.fillText('PHOTON SIGNAL',8,H-7);
+
+  requestAnimationFrame(drawNet);
+}
+requestAnimationFrame(drawNet);
+
+/* â”€â”€ TYPEWRITER â”€â”€ */
+const phrases=['M.S. ECE @ UCSB â€” Electronics & Photonics','VLSI Designer & Reversible Logic Researcher','AI Hardware Architect','Photonic Systems Engineer','Ex-Oracle Consulting Developer','4Ã— IEEE Author Â· Indian Patent Holder'];
+let pi=0,ci=0,del=false;
+const tw=document.getElementById('tw');
+function typeLoop(){
+  const p=phrases[pi];
+  if(!del){tw.textContent=p.slice(0,ci++);if(ci>p.length){del=true;setTimeout(typeLoop,2200);return;}}
+  else{tw.textContent=p.slice(0,ci--);if(ci<0){del=false;pi=(pi+1)%phrases.length;ci=0;setTimeout(typeLoop,450);return;}}
+  setTimeout(typeLoop,del?32:65);
+}
+typeLoop();
+
+/* â”€â”€ SCROLL REVEAL â”€â”€ */
+const ro=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('on');}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* â”€â”€ SKILL BARS â”€â”€ */
+const sbo=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.w+'%');}),{threshold:.2});
+document.querySelectorAll('.sk-cat').forEach(el=>sbo.observe(el));
+
+/* â”€â”€ ACTIVE NAV â”€â”€ */
+const secs=document.querySelectorAll('section[id]');
+const nls=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let active='';
+  secs.forEach(s=>{if(window.scrollY>=s.offsetTop-140)active=s.id;});
+  nls.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+active?'var(--teal)':'';});
+},{passive:true});
+</script>
+</body>
+</html>
+
